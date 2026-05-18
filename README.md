@@ -9,6 +9,87 @@ in a Git-backed filesystem.
 
 ![LLM Wiki running in Open WebUI](docs/assets/llm-wiki-openwebui.jpg)
 
+## Architecture at a glance
+
+```mermaid
+flowchart LR
+  subgraph Capture["Capture surfaces"]
+    WebForm["/share web form"]
+    Telegram["Telegram"]
+    Files["File drops"]
+    Browser["Open WebUI chat"]
+  end
+
+  Intake["FastAPI intake service"]
+
+  subgraph Raw["Raw storage"]
+    Inbox["raw/inbox"]
+    Assets["raw/assets"]
+    Sources["raw/sources"]
+  end
+
+  subgraph Queue["File-backed queues"]
+    QueryJobs["query jobs"]
+    IngestJobs["ingest jobs"]
+    LintJobs["lint jobs"]
+  end
+
+  Worker["Maintainer worker"]
+
+  subgraph Agents["OpenClaw agents"]
+    QueryAgent["telegram-query"]
+    MaintainerAgent["wiki-maintainer"]
+    LinterAgent["wiki-linter"]
+  end
+
+  subgraph Wiki["Markdown wiki"]
+    Index["wiki/index.md"]
+    Pages["sources, concepts, entities, projects"]
+    Outputs["answers and syntheses"]
+    Log["wiki/log.md"]
+  end
+
+  Git["Git history"]
+  User["Human or agent asks questions"]
+
+  WebForm --> Intake
+  Telegram --> Intake
+  Files --> Inbox
+  Browser --> QueryJobs
+  Intake --> Inbox
+  Intake --> Assets
+  Intake --> QueryJobs
+  Intake --> IngestJobs
+
+  Inbox --> Worker
+  Assets --> Worker
+  QueryJobs --> Worker
+  IngestJobs --> Worker
+  LintJobs --> Worker
+
+  Worker --> QueryAgent
+  Worker --> MaintainerAgent
+  Worker --> LinterAgent
+
+  MaintainerAgent --> Sources
+  MaintainerAgent --> Pages
+  LinterAgent --> Pages
+  LinterAgent --> Outputs
+  QueryAgent --> Index
+  QueryAgent --> Pages
+  QueryAgent --> Outputs
+
+  Sources --> Wiki
+  Pages --> Index
+  Outputs --> Index
+  Wiki --> Log
+  Wiki --> Git
+
+  User --> Browser
+  User --> Telegram
+  Wiki --> User
+```
+
 ## What LLM Wiki does
 
 LLM Wiki gives you a private knowledge base that agents can keep improving:
