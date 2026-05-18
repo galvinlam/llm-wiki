@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">LLM Wiki architecture</title>
+  <desc id="desc">Architecture diagram showing capture surfaces flowing into intake, queues, OpenClaw agents, markdown wiki storage, and Git history.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155" />
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+    <style>
+      .canvas { fill: #ffffff; }
+      .group { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; rx: 20; filter: url(#shadow); }
+      .group-title { fill: #0f172a; font: 700 20px Arial, sans-serif; }
+      .node { fill: #ffffff; stroke: #94a3b8; stroke-width: 1.5; rx: 12; }
+      .node-green { fill: #ecfdf5; stroke: #10b981; }
+      .node-blue { fill: #eff6ff; stroke: #3b82f6; }
+      .node-purple { fill: #f5f3ff; stroke: #8b5cf6; }
+      .node-amber { fill: #fffbeb; stroke: #f59e0b; }
+      .node-text { fill: #0f172a; font: 600 15px Arial, sans-serif; }
+      .node-sub { fill: #475569; font: 12px Arial, sans-serif; }
+      .arrow { fill: none; stroke: #334155; stroke-width: 2.2; marker-end: url(#arrow); }
+      .arrow-soft { fill: none; stroke: #64748b; stroke-width: 1.8; marker-end: url(#arrow); stroke-dasharray: 6 5; }
+      .caption { fill: #475569; font: 13px Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="canvas" x="0" y="0" width="1280" height="760" />
+  <text x="48" y="52" fill="#0f172a" font-family="Arial, sans-serif" font-size="30" font-weight="800">LLM Wiki Architecture</text>
+  <text x="48" y="78" class="caption">Capture first, queue agent work, promote durable knowledge into markdown, and keep history in Git.</text>
+
+  <rect class="group" x="44" y="120" width="210" height="276" />
+  <text class="group-title" x="70" y="158">Capture</text>
+  <rect class="node node-green" x="70" y="178" width="158" height="42" />
+  <text class="node-text" x="91" y="204">/share form</text>
+  <rect class="node node-green" x="70" y="232" width="158" height="42" />
+  <text class="node-text" x="106" y="258">Telegram</text>
+  <rect class="node node-green" x="70" y="286" width="158" height="42" />
+  <text class="node-text" x="106" y="312">File drops</text>
+  <rect class="node node-green" x="70" y="340" width="158" height="42" />
+  <text class="node-text" x="93" y="366">Open WebUI</text>
+
+  <rect class="node node-blue" x="310" y="224" width="176" height="70" />
+  <text class="node-text" x="342" y="254">FastAPI intake</text>
+  <text class="node-sub" x="338" y="276">capture + webhook</text>
+
+  <rect class="group" x="548" y="120" width="218" height="204" />
+  <text class="group-title" x="574" y="158">Raw storage</text>
+  <rect class="node" x="574" y="180" width="166" height="38" />
+  <text class="node-text" x="616" y="204">raw/inbox</text>
+  <rect class="node" x="574" y="228" width="166" height="38" />
+  <text class="node-text" x="615" y="252">raw/assets</text>
+  <rect class="node" x="574" y="276" width="166" height="38" />
+  <text class="node-text" x="612" y="300">raw/sources</text>
+
+  <rect class="group" x="548" y="378" width="218" height="204" />
+  <text class="group-title" x="574" y="416">Queues</text>
+  <rect class="node node-amber" x="574" y="438" width="166" height="38" />
+  <text class="node-text" x="618" y="462">query jobs</text>
+  <rect class="node node-amber" x="574" y="486" width="166" height="38" />
+  <text class="node-text" x="618" y="510">ingest jobs</text>
+  <rect class="node node-amber" x="574" y="534" width="166" height="38" />
+  <text class="node-text" x="628" y="558">lint jobs</text>
+
+  <rect class="node node-blue" x="820" y="332" width="184" height="80" />
+  <text class="node-text" x="853" y="364">Maintainer</text>
+  <text class="node-text" x="872" y="384">worker</text>
+
+  <rect class="group" x="1052" y="228" width="190" height="288" />
+  <text class="group-title" x="1080" y="266">OpenClaw</text>
+  <rect class="node node-purple" x="1078" y="290" width="138" height="42" />
+  <text class="node-text" x="1095" y="316">telegram-query</text>
+  <rect class="node node-purple" x="1078" y="346" width="138" height="42" />
+  <text class="node-text" x="1094" y="372">wiki-maintainer</text>
+  <rect class="node node-purple" x="1078" y="402" width="138" height="42" />
+  <text class="node-text" x="1108" y="428">wiki-linter</text>
+  <text class="node-sub" x="1084" y="474">fetch, read, dedupe,</text>
+  <text class="node-sub" x="1084" y="492">synthesize, write back</text>
+
+  <rect class="group" x="310" y="620" width="456" height="96" />
+  <text class="group-title" x="338" y="656">Markdown wiki</text>
+  <text class="node-sub" x="338" y="682">wiki/index.md, sources, concepts, entities, projects, answers, syntheses, log</text>
+
+  <rect class="node" x="842" y="632" width="140" height="52" />
+  <text class="node-text" x="881" y="663">Git history</text>
+
+  <rect class="node node-green" x="82" y="622" width="142" height="56" />
+  <text class="node-text" x="115" y="647">Human or</text>
+  <text class="node-text" x="107" y="667">agent query</text>
+
+  <path class="arrow" d="M228 199 C260 199 270 242 310 250" />
+  <path class="arrow" d="M228 253 C262 253 276 258 310 258" />
+  <path class="arrow" d="M228 307 C300 307 492 202 574 199" />
+  <path class="arrow" d="M228 361 C300 386 478 450 574 457" />
+  <path class="arrow" d="M486 246 C520 232 536 210 574 199" />
+  <path class="arrow" d="M486 268 C522 326 532 444 574 457" />
+  <path class="arrow" d="M740 199 C792 204 804 306 850 332" />
+  <path class="arrow" d="M740 457 C782 438 790 390 820 374" />
+  <path class="arrow" d="M740 505 C786 490 796 404 820 386" />
+  <path class="arrow" d="M740 553 C792 526 798 410 820 394" />
+  <path class="arrow" d="M1004 372 C1024 372 1042 366 1078 366" />
+  <path class="arrow" d="M1078 416 C996 500 850 640 766 668" />
+  <path class="arrow" d="M1078 310 C996 520 840 610 766 650" />
+  <path class="arrow" d="M574 295 C492 378 448 520 448 620" />
+  <path class="arrow" d="M766 668 C800 668 812 658 842 658" />
+  <path class="arrow-soft" d="M153 622 C190 540 260 466 574 457" />
+  <path class="arrow-soft" d="M310 650 C246 644 230 650 224 650" />
+</svg>
