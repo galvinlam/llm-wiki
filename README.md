@@ -1,53 +1,61 @@
 ﻿# llm-wiki
 
-`llm-wiki` is a filesystem-first shared memory system for one human plus multiple agents.
+`llm-wiki` is a markdown-first knowledge system for people and AI agents.
 
-It is designed to run on a single VPS with a minimal stack:
+It turns messy saved material into a durable wiki that can be queried from chat.
+Instead of relying on a model to remember what was said in an old conversation,
+the system keeps raw captures, source notes, synthesized pages, and saved answers
+in a Git-backed filesystem.
 
-- `Open WebUI` for browser chat
-- `SilverBullet` for wiki browsing and lightweight editing
-- a small `FastAPI` intake service for phone/laptop capture and Telegram webhooks
-- a background maintainer worker for queued query and ingest jobs
-- `git` for history
+![LLM Wiki running in Open WebUI](docs/assets/llm-wiki-openwebui.jpg)
 
-The repo itself is the durable knowledge base. The goal is not just to store files, but to let humans and agents continuously turn raw captures into structured, reusable knowledge.
+## What LLM Wiki does
 
-## Design principle
+LLM Wiki gives you a private knowledge base that agents can keep improving:
 
-Keep the platform thin and the knowledge work agentic.
+- capture links, files, PDFs, notes, and chat messages from phone or laptop
+- preserve original source material in `raw/`
+- ask agents to de-batch, summarize, categorize, dedupe, and link that material
+- promote durable outputs into markdown pages under `wiki/`
+- answer questions through Open WebUI or Telegram using the maintained wiki as context
+- save useful answers back into the wiki so the system compounds over time
 
-The codebase should handle the deterministic infrastructure:
+The code stays intentionally small. It handles capture, storage, queues, status,
+and dispatch. OpenClaw agents handle the judgment-heavy work: reading messy
+inputs, finding structure, filling gaps, and improving wiki pages.
 
-- receiving messages, links, and files
-- storing them durably
-- queueing jobs
-- tracking status
-- dispatching agent work
-- logging outcomes
+## Usage examples
 
-OpenClaw agents should handle the unstructured work:
+### Research capture
 
-- fetching and reading heterogeneous sources
-- extracting meaning from messy inputs
-- researching context
-- categorizing and linking material
-- synthesizing knowledge
-- improving the wiki over time
+Send a group of X, Reddit, YouTube, GitHub, or article links into Telegram or the
+web intake form. LLM Wiki stores the bundle, then the maintainer agent splits it
+into atomic source notes and promotes durable takeaways into topic pages.
 
-## What this project is for
+### Cooking videos
 
-This project is meant to solve four problems at once:
+Save a YouTube cooking playlist. The ingest agent can process videos one by one,
+extract ingredients and cooking methods, and create recipe pages that are easier
+to search than the original playlist.
 
-1. capture information quickly from phone or laptop
-2. chat with the knowledge base through browser or Telegram
-3. let agents use the same knowledge base as shared memory
-4. let agents continuously improve that knowledge base over time
+### PDF and file drops
 
-The operating model follows Karpathy's `llm-wiki` pattern:
+Drop a PDF, screenshot, or document into the inbox. The raw asset remains
+available for provenance, while agents can extract concepts, glossary terms,
+project notes, or saved answers into structured markdown.
 
-- `raw/` is the capture and source layer
-- `wiki/` is the compiled markdown knowledge layer
-- `AGENTS.md` defines how agents should behave
+### Agent memory
+
+Ask a question such as: "What did I save about autonomous agents and queue
+failures?" The query path searches the maintained wiki first, then raw sources
+when needed, so answers are grounded in saved material rather than chat memory
+alone.
+
+### Writeback
+
+When an answer is useful, save it into `wiki/answers/` or `wiki/syntheses/`.
+That makes the next agent or chat session smarter without requiring a long prompt
+history.
 
 ## How it works
 
@@ -345,13 +353,6 @@ bash ops/scripts/setup-openclaw-agents.sh
 - first-class lint queue support so ingest can hand off decomposition, dedupe, and synthesis work
 - OpenClaw integration contract and skills
 - agent operating rules in `AGENTS.md`
-
-## What is not complete yet
-
-- real OpenClaw command wiring
-- richer ingest enrichment for web pages, PDFs, and media
-- stronger search/ranking than local markdown matching
-- deployment hardening such as reverse proxy, auth, and backups
 
 ## Important docs
 
