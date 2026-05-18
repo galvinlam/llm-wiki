@@ -12,6 +12,7 @@ in a Git-backed filesystem.
 ## Architecture at a glance
 
 ```mermaid
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#f8fafc", "primaryTextColor": "#0f172a", "primaryBorderColor": "#94a3b8", "lineColor": "#334155", "secondaryColor": "#eef2ff", "tertiaryColor": "#f0fdfa"}}}%%
 flowchart LR
   subgraph Capture["Capture surfaces"]
     WebForm["/share web form"]
