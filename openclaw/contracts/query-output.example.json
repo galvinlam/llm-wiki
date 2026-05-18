@@ -1,0 +1,8 @@
+{
+  "reply_markdown": "We currently rely on plain markdown plus index-based retrieval, with richer search deferred until the corpus grows.",
+  "citations": [
+    "wiki/index.md",
+    "docs/architecture.md"
+  ],
+  "save_candidate": true
+}

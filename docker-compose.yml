@@ -1,0 +1,94 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: llm-wiki-open-webui
+    restart: unless-stopped
+    environment:
+      WEBUI_SECRET_KEY: ${OPENWEBUI_SECRET_KEY}
+      TZ: ${TZ}
+    ports:
+      - "${OPENWEBUI_PORT}:8080"
+    volumes:
+      - ./data/open-webui:/app/backend/data
+      - ./:/workspace/llm-wiki
+
+  silverbullet:
+    image: zefhemel/silverbullet:latest
+    container_name: llm-wiki-silverbullet
+    restart: unless-stopped
+    command: ["silverbullet", "--hostname", "0.0.0.0", "--port", "3000", "/space"]
+    environment:
+      TZ: ${TZ}
+    ports:
+      - "${SILVERBULLET_PORT}:3000"
+    volumes:
+      - ./:/space
+
+  intake:
+    build:
+      context: ./ops/intake
+    container_name: llm-wiki-intake
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+      INTAKE_SHARED_TOKEN: ${INTAKE_SHARED_TOKEN}
+      INTAKE_STORAGE_PATH: ${INTAKE_STORAGE_PATH}
+      INTAKE_BASE_URL: ${INTAKE_BASE_URL}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET}
+      TELEGRAM_ALLOWED_CHAT_IDS: ${TELEGRAM_ALLOWED_CHAT_IDS}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_WHATSAPP_FROM: ${TWILIO_WHATSAPP_FROM}
+      QUERY_POLL_SECONDS: ${QUERY_POLL_SECONDS}
+      MAINTAINER_INTERVAL_SECONDS: ${MAINTAINER_INTERVAL_SECONDS}
+      AUTO_INGEST_ENABLED: ${AUTO_INGEST_ENABLED}
+      AUTO_LINT_ENABLED: ${AUTO_LINT_ENABLED}
+      LINT_INTERVAL_SECONDS: ${LINT_INTERVAL_SECONDS}
+      AUTO_COMMIT_ENABLED: ${AUTO_COMMIT_ENABLED}
+      OPENCLAW_QUERY_COMMAND: ${OPENCLAW_QUERY_COMMAND}
+      OPENCLAW_INGEST_COMMAND: ${OPENCLAW_INGEST_COMMAND}
+      OPENCLAW_LINT_COMMAND: ${OPENCLAW_LINT_COMMAND}
+      OPENCLAW_QUERY_AGENT_ID: ${OPENCLAW_QUERY_AGENT_ID}
+      OPENCLAW_INGEST_AGENT_ID: ${OPENCLAW_INGEST_AGENT_ID}
+      OPENCLAW_LINT_AGENT_ID: ${OPENCLAW_LINT_AGENT_ID}
+      OPENCLAW_AGENT_TIMEOUT_SECONDS: ${OPENCLAW_AGENT_TIMEOUT_SECONDS}
+      OPENCLAW_QUERY_EXEC_COMMAND: ${OPENCLAW_QUERY_EXEC_COMMAND}
+      OPENCLAW_INGEST_EXEC_COMMAND: ${OPENCLAW_INGEST_EXEC_COMMAND}
+      OPENCLAW_LINT_EXEC_COMMAND: ${OPENCLAW_LINT_EXEC_COMMAND}
+    ports:
+      - "${INTAKE_PORT}:8787"
+    volumes:
+      - ./:/workspace/llm-wiki
+      - ./data/intake:/data
+
+  maintainer:
+    build:
+      context: ./ops/intake
+    container_name: llm-wiki-maintainer
+    restart: unless-stopped
+    command: ["python", "worker.py"]
+    environment:
+      TZ: ${TZ}
+      INTAKE_SHARED_TOKEN: ${INTAKE_SHARED_TOKEN}
+      INTAKE_BASE_URL: ${INTAKE_BASE_URL}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET}
+      TELEGRAM_ALLOWED_CHAT_IDS: ${TELEGRAM_ALLOWED_CHAT_IDS}
+      QUERY_POLL_SECONDS: ${QUERY_POLL_SECONDS}
+      MAINTAINER_INTERVAL_SECONDS: ${MAINTAINER_INTERVAL_SECONDS}
+      AUTO_INGEST_ENABLED: ${AUTO_INGEST_ENABLED}
+      AUTO_LINT_ENABLED: ${AUTO_LINT_ENABLED}
+      LINT_INTERVAL_SECONDS: ${LINT_INTERVAL_SECONDS}
+      AUTO_COMMIT_ENABLED: ${AUTO_COMMIT_ENABLED}
+      OPENCLAW_QUERY_COMMAND: ${OPENCLAW_QUERY_COMMAND}
+      OPENCLAW_INGEST_COMMAND: ${OPENCLAW_INGEST_COMMAND}
+      OPENCLAW_LINT_COMMAND: ${OPENCLAW_LINT_COMMAND}
+      OPENCLAW_QUERY_AGENT_ID: ${OPENCLAW_QUERY_AGENT_ID}
+      OPENCLAW_INGEST_AGENT_ID: ${OPENCLAW_INGEST_AGENT_ID}
+      OPENCLAW_LINT_AGENT_ID: ${OPENCLAW_LINT_AGENT_ID}
+      OPENCLAW_AGENT_TIMEOUT_SECONDS: ${OPENCLAW_AGENT_TIMEOUT_SECONDS}
+      OPENCLAW_QUERY_EXEC_COMMAND: ${OPENCLAW_QUERY_EXEC_COMMAND}
+      OPENCLAW_INGEST_EXEC_COMMAND: ${OPENCLAW_INGEST_EXEC_COMMAND}
+      OPENCLAW_LINT_EXEC_COMMAND: ${OPENCLAW_LINT_EXEC_COMMAND}
+    volumes:
+      - ./:/workspace/llm-wiki

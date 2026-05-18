@@ -1,0 +1,8 @@
+{
+  "kind": "query",
+  "status": "pending",
+  "created": "2026-04-06T10:00:00-07:00",
+  "origin": "telegram",
+  "chat_id": "123456789",
+  "question": "What do we know about local markdown search tools?"
+}

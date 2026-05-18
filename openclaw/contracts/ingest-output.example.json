@@ -1,0 +1,14 @@
+{
+  "summary": "Processed 3 inbox items and linked them into the wiki.",
+  "processed": [
+    {
+      "title": "Example Source",
+      "source_note": "raw/sources/2026-04-06-example-source.md",
+      "wiki_note": "wiki/sources/2026-04-06-example-source.md",
+      "linked_pages": [
+        "wiki/concepts/search.md",
+        "wiki/projects/llm-wiki.md"
+      ]
+    }
+  ]
+}
